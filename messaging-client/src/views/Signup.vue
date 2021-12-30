@@ -1,6 +1,11 @@
 <template>
   <div class="container">
     <h2>Signup and chat with your favorite people</h2>
+    <div class="errors">
+      <ul>
+        <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
+      </ul>
+    </div>
     <form @submit.prevent="onSubmit" class="login-form">
       <input
         type="text"
@@ -53,6 +58,7 @@ export default {
       email: '',
       password: '',
       passwordConfirmation: '',
+      errors: [],
     }
   },
   methods: {
@@ -63,26 +69,38 @@ export default {
         this.password === '' ||
         this.passwordConfirmation === ''
       ) {
-        alert('A field cannot be empty')
+        this.errors = ['A field cannot be empty']
+        return
+      }
+
+      if (this.password.length < 8) {
+        this.errors = ['Password must have at least 8 characters']
         return
       }
 
       if (this.password !== this.passwordConfirmation) {
-        alert('passwords do not match')
+        this.errors = ['Passwords do not match']
         return
       }
 
       //TODO: save user information after i implement login on backend
       try {
-        const response = await axios.post('/signup', {
-          username: this.usermame,
+        const response = await axios.post('/auth/signup', {
+          username: this.username,
           email: this.email,
           password: this.password,
         })
-        console.log(response)
-        this.router.push('/')
+        //TODO: Revisit this, use local storage for now
+        localStorage.setItem('token', response.data.token)
+        this.$router.push('/')
       } catch (error) {
-        alert('request not successfull, something went wrong')
+        const errorData = error.response.data.errors
+        console.log(error.response.data)
+        if (errorData) {
+          this.errors = errorData.map((error) => error.message)
+        } else {
+          this.errors = ['Oups, something went wwrong']
+        }
       }
     },
   },
@@ -96,6 +114,11 @@ export default {
   align-items: center;
   flex-direction: column;
   min-height: 100vh;
+}
+
+.errors {
+  margin-top: 30px;
+  color: #ff0000;
 }
 
 .login-form {

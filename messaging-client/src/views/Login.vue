@@ -1,18 +1,24 @@
 <template>
   <div class="container">
     <h2>Login and chat with your favorite people</h2>
+    <div class="errors">
+      <ul>
+        <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
+      </ul>
+    </div>
+
     <form @submit.prevent="onSubmit" class="login-form">
       <input
-        type="email"
-        name="email"
-        placeholder="Enter email address"
-        v-model="email"
+        type="text"
+        name="email-username"
+        placeholder="Email or username"
+        v-model="usernameOrEmail"
         required
       />
 
       <input
         type="password"
-        placeholder="Enter password"
+        placeholder="Password"
         v-model="password"
         required
       />
@@ -35,26 +41,32 @@ export default {
   name: 'Login',
   data() {
     return {
-      email: '',
+      usernameOrEmail: '',
       password: '',
+      errors: [],
     }
   },
   methods: {
     async onSubmit() {
-      if (this.email !== '' || this.password !== '') {
-        alert('A field cannot be empty')
+      if (this.usernameOrEmail === '' || this.password === '') {
+        this.errors = ['All fields are required']
         return
       }
-      //TODO: save user information after i implement login on backend
       try {
-        const response = await axios.post('/login', {
-          email: this.email,
+        const response = await axios.post('/auth/login', {
+          usernameOrEmail: this.usernameOrEmail,
           password: this.password,
         })
-        console.log(response)
-        this.router.push('/')
+        //TODO: Revisit this, use local storage for now
+        localStorage.setItem('token', response.data.token)
+        this.$router.push('/')
       } catch (error) {
-        alert('request not successfull, something went wrong')
+        const errorData = error.response.data.errors
+        if (errorData) {
+          this.errors = errorData.map((error) => error.message)
+        } else {
+          this.errors = ['Oups, something went wwrong']
+        }
       }
     },
   },
@@ -62,6 +74,11 @@ export default {
 </script>
 
 <style scope>
+.errors {
+  margin-top: 30px;
+  color: #ff0000;
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -74,6 +91,7 @@ export default {
   width: 300px;
   margin-top: 30px;
 }
+
 input {
   width: 100%;
   height: 40px;
