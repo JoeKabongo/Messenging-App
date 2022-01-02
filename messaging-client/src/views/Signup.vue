@@ -85,14 +85,12 @@ export default {
 
       //TODO: save user information after i implement login on backend
       try {
-        const response = await axios.post('/auth/signup', {
+        await axios.post('/auth/signup', {
           username: this.username,
           email: this.email,
           password: this.password,
         })
-        //TODO: Revisit this, use local storage for now
-        localStorage.setItem('token', response.data.token)
-        this.$router.push('/')
+        this.$router.push('/login')
       } catch (error) {
         const errorData = error.response.data.errors
         console.log(error.response.data)
