@@ -1,17 +1,18 @@
 <template>
   <div>
-    <h1>Home</h1>
-    <Conversations />
-    <button @click="logout">Logout</button>
+    <MessagesNavigation />
+    <Messages />
   </div>
 </template>
 
 <script>
-import Conversations from '../components/Conversations.vue'
+import MessagesNavigation from '../components/MessagesNavigation.vue'
+import Messages from '../components/Messages.vue'
 export default {
   name: 'Home',
   components: {
-    Conversations,
+    MessagesNavigation,
+    Messages,
   },
   methods: {
     logout() {
@@ -21,3 +22,5 @@ export default {
   },
 }
 </script>
+
+<style scoped></style>

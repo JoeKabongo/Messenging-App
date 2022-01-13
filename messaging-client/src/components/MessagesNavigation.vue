@@ -1,5 +1,6 @@
 <template>
   <div id="conversation-container">
+    <h1>Messages</h1>
     <div
       class="conversation-item"
       v-for="item in lastConversations"
@@ -19,7 +20,7 @@
 
 <script>
 export default {
-  name: 'Conversations',
+  name: 'MessagesNavigation',
   data() {
     return {
       lastConversations: ['Jonathan x', 'maxin1721', 'steph', 'maggi1234'],
@@ -30,17 +31,25 @@ export default {
 
 <style scoped>
 #conversation-container {
-  position: absolute;
+  position: fixed;
   top: 0;
-  bottom: 0;
-  width: 400px;
-  background: red;
+  display: inline-block;
+  width: 300px;
+  height: 100vh;
+  border-right: 1px solid #ebebeb;
+  padding: 5px;
 }
 .conversation-item {
   display: flex;
   align-items: center;
   padding: 10px;
 }
+
+.conversation-item:hover {
+  background: #ebebeb;
+  cursor: pointer;
+}
+
 .profile-picture {
   width: 50px;
 }

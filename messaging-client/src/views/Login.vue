@@ -73,7 +73,7 @@ export default {
 }
 </script>
 
-<style scope>
+<style scoped>
 .errors {
   margin-top: 30px;
   color: #ff0000;
